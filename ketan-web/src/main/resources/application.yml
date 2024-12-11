@@ -1,0 +1,4 @@
+spring:
+  config:
+    import: application-web.yml,application-config.yml,application-image.yml
+
