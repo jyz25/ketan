@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <!-- ~{::title}传递title这个元素 -->
 <div th:replace="components/layout/header :: head(~{::title}, ~{}, ~{})">
-	<title th:text="${global.siteInfo.websiteName}">科探</title>
+	<title th:text="${global.siteInfo.websiteName}">枫叶社区</title>
 </div>
 <link href="/css/views/home.css" th:href="${global.siteInfo.oss + '/css/views/home.css'}" rel="stylesheet"/>
 

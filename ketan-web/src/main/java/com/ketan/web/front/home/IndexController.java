@@ -1,5 +1,6 @@
-package com.ketan.web.home;
+package com.ketan.web.front.home;
 
+import com.ketan.web.front.home.vo.IndexVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,9 @@ public class IndexController {
 
     @GetMapping(path = {"/", "", "/index", "/login"})
     public String index(Model model, HttpServletRequest request) {
+        String activeTab = request.getParameter("category");
+        IndexVo vo = null;
+        model.addAttribute("vo", vo);
         return "views/home/index";
     }
 }

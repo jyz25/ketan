@@ -18,20 +18,46 @@
     <modules>
         <module>ketan-web</module>
         <module>ketan-ui</module>
+        <module>ketan-service</module>
+        <module>ketan-api</module>
+        <module>ketan-core</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mybaits-plus.version>3.5.2</mybaits-plus.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.kt</groupId>
+                <artifactId>ketan-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kt</groupId>
+                <artifactId>ketan-core</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kt</groupId>
+                <artifactId>ketan-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kt</groupId>
                 <artifactId>ketan-ui</artifactId>
                 <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybaits-plus.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

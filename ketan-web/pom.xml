@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kt</groupId>
+            <artifactId>ketan-service</artifactId>
+        </dependency>
+
         <!--引入UI-->
         <dependency>
             <groupId>org.kt</groupId>

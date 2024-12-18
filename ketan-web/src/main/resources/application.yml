@@ -1,4 +1,11 @@
 spring:
   config:
-    import: application-web.yml,application-config.yml,application-image.yml
+    import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml
 
+
+
+
+
+# 默认的数据库名
+database:
+  name: ketan
