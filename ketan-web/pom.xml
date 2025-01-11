@@ -47,6 +47,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- 引入 hutool 工具包 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
         <!-- Test libs start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

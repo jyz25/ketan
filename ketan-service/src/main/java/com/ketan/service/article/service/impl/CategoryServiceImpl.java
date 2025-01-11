@@ -5,7 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.ketan.api.model.enums.YesOrNoEnum;
 import com.ketan.api.model.vo.article.dto.CategoryDTO;
-import com.ketan.service.article.conveter.ArticleConveter;
+import com.ketan.service.article.conveter.ArticleConverter;
 import com.ketan.service.article.repository.dao.CategoryDao;
 import com.ketan.service.article.repository.entity.CategoryDO;
 import com.ketan.service.article.service.CategoryService;
@@ -86,6 +86,6 @@ public class CategoryServiceImpl implements CategoryService {
         categoryCaches.cleanUp(); // 手动触发清理过期或无效条目,此处没必要执行
         // do(Data Object) -> 数据库表直接对应
         // dto(Data Transfer Object) -> 用于服务层或接口层传递
-        list.forEach(c -> categoryCaches.put(c.getId(), ArticleConveter.toDto(c)));
+        list.forEach(c -> categoryCaches.put(c.getId(), ArticleConverter.toDto(c)));
     }
 }

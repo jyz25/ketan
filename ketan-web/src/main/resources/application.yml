@@ -9,3 +9,10 @@ spring:
 # 默认的数据库名
 database:
   name: ketan
+
+
+# mybatis 相关统一配置
+mybatis-plus:
+  configuration:
+    #开启下划线转驼峰
+    map-underscore-to-camel-case: true

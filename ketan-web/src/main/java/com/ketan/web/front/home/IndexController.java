@@ -23,7 +23,6 @@ public class IndexController {
     @Autowired
     IndexRecommendHelper indexRecommendHelper;
 
-
     @GetMapping(path = {"/", "", "/index", "/login"})
     public String index(Model model, HttpServletRequest request) {
         String activeTab = request.getParameter("category");
