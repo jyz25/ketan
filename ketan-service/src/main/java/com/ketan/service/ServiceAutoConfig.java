@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @MapperScan(basePackages = {
         "com.ketan.service.article.repository.mapper",
         "com.ketan.service.user.repository.mapper",
+        "com.ketan.service.config.repository.mapper",
 })
 public class ServiceAutoConfig {
 }

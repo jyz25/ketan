@@ -3,6 +3,7 @@ package com.ketan.service.article.service;
 import com.ketan.api.model.vo.PageListVo;
 import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.article.dto.ArticleDTO;
+import com.ketan.api.model.vo.article.dto.SimpleArticleDTO;
 import com.ketan.service.article.repository.entity.ArticleDO;
 
 import java.util.List;
@@ -27,4 +28,22 @@ public interface ArticleReadService {
      * @return
      */
     PageListVo<ArticleDTO> buildArticleListVo(List<ArticleDO> records, long pageSize);
+
+
+    /**
+     * 获取 Top 文章
+     *
+     * @param categoryId
+     * @return
+     */
+    List<ArticleDTO> queryTopArticlesByCategory(Long categoryId);
+
+    /**
+     * 查询热门文章
+     *
+     * @param pageParam
+     * @return
+     */
+    PageListVo<SimpleArticleDTO> queryHotArticlesForRecommend(PageParam pageParam);
+
 }

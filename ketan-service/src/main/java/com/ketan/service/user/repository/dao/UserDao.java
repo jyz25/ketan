@@ -9,6 +9,9 @@ import com.ketan.service.user.repository.entity.UserInfoDO;
 import com.ketan.service.user.repository.mapper.UserInfoMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+
 
 @Repository
 public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
@@ -18,5 +21,12 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         query.eq(UserInfoDO::getUserId, userId)
                 .eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode());
         return baseMapper.selectOne(query);
+    }
+
+    public List<UserInfoDO> getByUserIds(Collection<Long> userIds) {
+        LambdaQueryWrapper<UserInfoDO> query = Wrappers.lambdaQuery();
+        query.in(UserInfoDO::getUserId, userIds)
+                .eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode());
+        return baseMapper.selectList(query);
     }
 }

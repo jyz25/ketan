@@ -4,6 +4,7 @@ package com.ketan.service.article.service.impl;
 import com.ketan.api.model.vo.PageListVo;
 import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.article.dto.ArticleDTO;
+import com.ketan.api.model.vo.article.dto.SimpleArticleDTO;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import com.ketan.service.article.conveter.ArticleConverter;
 import com.ketan.service.article.repository.dao.ArticleDao;
@@ -59,6 +60,25 @@ public class ArticleReadServiceImpl implements ArticleReadService {
     public PageListVo<ArticleDTO> buildArticleListVo(List<ArticleDO> records, long pageSize) {
         List<ArticleDTO> result = records.stream().map(this::fillArticleRelatedInfo).collect(Collectors.toList());
         return PageListVo.newVo(result, pageSize);
+    }
+
+    /**
+     * 查询置顶的文章列表
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<ArticleDTO> queryTopArticlesByCategory(Long categoryId) {
+        PageParam page = PageParam.newPageInstance(PageParam.DEFAULT_PAGE_NUM, PageParam.TOP_PAGE_SIZE);
+        List<ArticleDO> articleDTOS = articleDao.listArticlesByCategoryId(categoryId, page);
+        return articleDTOS.stream().map(this::fillArticleRelatedInfo).collect(Collectors.toList());
+    }
+
+    @Override
+    public PageListVo<SimpleArticleDTO> queryHotArticlesForRecommend(PageParam pageParam) {
+        List<SimpleArticleDTO> list = articleDao.listHotArticles(pageParam);
+        return PageListVo.newVo(list, pageParam.getPageSize());
     }
 
     /**

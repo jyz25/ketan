@@ -3,6 +3,8 @@ package com.ketan.service.user.converter;
 
 import com.ketan.api.model.enums.RoleEnum;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
+import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
+import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
 import com.ketan.service.user.repository.entity.UserInfoDO;
 import org.springframework.beans.BeanUtils;
 
@@ -23,5 +25,21 @@ public class UserConverter {
         // 设置用户角色
         user.setRole(RoleEnum.role(info.getUserRole()));
         return user;
+    }
+
+
+    public static SimpleUserInfoDTO toSimpleInfo(UserInfoDO info) {
+        return new SimpleUserInfoDTO().setUserId(info.getUserId())
+                .setName(info.getUserName())
+                .setAvatar(info.getPhoto())
+                .setProfile(info.getProfile());
+    }
+
+    public static UserStatisticInfoDTO toUserHomeDTO(UserStatisticInfoDTO userHomeDTO, BaseUserInfoDTO baseUserInfoDTO) {
+        if (baseUserInfoDTO == null) {
+            return null;
+        }
+        BeanUtils.copyProperties(baseUserInfoDTO, userHomeDTO);
+        return userHomeDTO;
     }
 }

@@ -10,6 +10,8 @@ import com.ketan.api.model.enums.OfficalStatEnum;
 import com.ketan.api.model.enums.PushStatusEnum;
 import com.ketan.api.model.enums.YesOrNoEnum;
 import com.ketan.api.model.vo.PageParam;
+import com.ketan.api.model.vo.article.dto.SimpleArticleDTO;
+import com.ketan.api.model.vo.article.dto.YearArticleDTO;
 import com.ketan.service.article.repository.entity.ArticleDO;
 import com.ketan.service.article.repository.mapper.ArticleMapper;
 import org.springframework.stereotype.Repository;
@@ -72,6 +74,27 @@ public class ArticleDao extends ServiceImpl<ArticleMapper, ArticleDO> {
                 .orderByDesc(ArticleDO::getToppingStat, ArticleDO::getCreateTime);
         return baseMapper.selectList(query);
     }
+
+    /**
+     * 热门文章推荐，适用于首页的侧边栏
+     *
+     * @param pageParam
+     * @return
+     */
+    public List<SimpleArticleDTO> listHotArticles(PageParam pageParam) {
+        return baseMapper.listArticlesByReadCounts(pageParam);
+    }
+
+    /**
+     * 根据用户ID获取创作历程
+     *
+     * @param userId
+     * @return
+     */
+    public List<YearArticleDTO> listYearArticleByUserId(Long userId) {
+        return baseMapper.listYearArticleByUserId(userId);
+    }
+
 
 
 }

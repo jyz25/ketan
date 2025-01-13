@@ -1,19 +1,29 @@
 package com.ketan.web.front.home.helper;
 
+import com.ketan.api.model.context.ReqInfoContext;
+import com.ketan.api.model.enums.ConfigTypeEnum;
 import com.ketan.api.model.vo.PageListVo;
 import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.article.dto.ArticleDTO;
 import com.ketan.api.model.vo.article.dto.CategoryDTO;
-import com.ketan.core.async.AsyncUtil;
+import com.ketan.api.model.vo.banner.dto.ConfigDTO;
+import com.ketan.api.model.vo.recommend.CarouseDTO;
+import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
+import com.ketan.core.common.CommonConstants;
 import com.ketan.service.article.service.ArticleReadService;
 import com.ketan.service.article.service.CategoryService;
+import com.ketan.service.config.service.ConfigService;
+import com.ketan.service.sidebar.service.SidebarService;
+import com.ketan.service.user.service.UserService;
 import com.ketan.web.front.home.vo.IndexVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -23,9 +33,17 @@ public class IndexRecommendHelper {
     @Autowired
     private CategoryService categoryService;
 
-
     @Autowired
     private ArticleReadService articleService;
+
+    @Autowired
+    private ConfigService configService;
+
+    @Autowired
+    private SidebarService sidebarService;
+
+    @Autowired
+    private UserService userService;
 
 
     public IndexVo buildIndexVo(String activeTab) {
@@ -37,8 +55,35 @@ public class IndexRecommendHelper {
         vo.setCategoryId(category.getCategoryId());
         // 并行调度实例，提高响应性能 待做
         vo.setArticles(articleList(category.getCategoryId()));
+        vo.setTopArticles(topArticleList(category));
+        vo.setHomeCarouselList(homeCarouselList());
+        vo.setSideBarItems(sidebarService.queryHomeSidebarList());
+        vo.setUser(loginInfo());
 
         return null;
+    }
+
+    private UserStatisticInfoDTO loginInfo() {
+        if (ReqInfoContext.getReqInfo() != null && ReqInfoContext.getReqInfo().getUserId() != null) {
+            return userService.queryUserInfoWithStatistic(ReqInfoContext.getReqInfo().getUserId());
+        }
+        return null;
+    }
+
+
+    /**
+     * 轮播图
+     *
+     * @return
+     */
+    private List<CarouseDTO> homeCarouselList() {
+        List<ConfigDTO> configList = configService.getConfigList(ConfigTypeEnum.HOME_PAGE);
+        return configList.stream()
+                .map(configDTO -> new CarouseDTO()
+                        .setName(configDTO.getName())
+                        .setImgUrl(configDTO.getBannerUrl())
+                        .setActionUrl(configDTO.getJumpUrl()))
+                .collect(Collectors.toList());
     }
 
 
@@ -47,6 +92,27 @@ public class IndexRecommendHelper {
      */
     private PageListVo<ArticleDTO> articleList(Long categoryId) {
         return articleService.queryArticlesByCategory(categoryId, PageParam.newPageInstance());
+    }
+
+    /**
+     * 置顶top 文章列表
+     */
+    private List<ArticleDTO> topArticleList(CategoryDTO category) {
+        List<ArticleDTO> topArticles = articleService.queryTopArticlesByCategory(category.getCategoryId() == 0 ? null : category.getCategoryId());
+        if (topArticles.size() < PageParam.TOP_PAGE_SIZE) {
+            // 当分类下文章数小于置顶数时，为了避免显示问题，直接不展示
+            topArticles.clear();
+            return topArticles;
+        }
+
+        // 查询分类对应的头图列表
+        List<String> topPicList = CommonConstants.HOMEPAGE_TOP_PIC_MAP.getOrDefault(category.getCategory(),
+                CommonConstants.HOMEPAGE_TOP_PIC_MAP.get(CommonConstants.CATEGORY_ALL));
+
+        // 替换头图，下面做了一个数组越界的保护，避免当topPageSize数量变大，但是默认的cover图没有相应增大导致数组越界异常
+        AtomicInteger index = new AtomicInteger(0);
+        topArticles.forEach(s -> s.setCover(topPicList.get(index.getAndIncrement() % topPicList.size())));
+        return topArticles;
     }
 
 

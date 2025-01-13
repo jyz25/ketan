@@ -1,6 +1,7 @@
 package com.ketan.api.model.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import lombok.Data;
 
 import java.security.Principal;
 
@@ -30,11 +31,22 @@ public class ReqInfoContext {
     }
 
 
+    @Data
     public static class ReqInfo implements Principal {
+
+        /**
+         * 用户id
+         */
+        private Long userId;
+
+        /**
+         * 登录的会话
+         */
+        private String session;
 
         @Override
         public String getName() {
-            return null;
+            return session;
         }
     }
 
