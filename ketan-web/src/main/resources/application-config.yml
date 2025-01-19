@@ -1,4 +1,11 @@
 view:
   site:
     websiteName: 科探
+    zsxqUrl: https://ss.bjmu.edu.cn/Html/News/Articles/103156.html # 健康知识跳转的链接
+    zsxqImgUrl: https://pic.ibaotu.com/02/37/61/02A888piCVdb.jpg-0.jpg!w340 # 健康海报的图片地址
+    websiteRecord: 暂无备案（个人测试使用）
+    oss:
+    host: http://127.0.0.1:${server.port}
+    contactMeWxQrCode: https://fengyecommunity.oss-cn-chengdu.aliyuncs.com/weixin/ye-qrcode.jpg  # 公众号二维码
+
 

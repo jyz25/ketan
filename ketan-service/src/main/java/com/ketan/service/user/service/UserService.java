@@ -36,4 +36,14 @@ public interface UserService {
      */
     UserStatisticInfoDTO queryUserInfoWithStatistic(Long userId);
 
+    /**
+     * 获取登录的用户信息,并更新对应的ip信息
+     *
+     * @param session  用户会话
+     * @param clientIp 用户最新的登录ip
+     * @return 返回用户基本信息
+     */
+    BaseUserInfoDTO getAndUpdateUserIpInfoBySessionId(String session, String clientIp);
+
+
 }

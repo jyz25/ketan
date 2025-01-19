@@ -514,7 +514,7 @@
       source.onerror = function (e, evt) {
         console.log("连接错误，重新开始", e, evt)
         stateTag.text("连接中断,请刷新重连");
-        buildConnect(code);
+        // buildConnect(code);
       }
 
       fetchCodeCnt = 0;

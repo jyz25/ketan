@@ -1,6 +1,8 @@
 package com.ketan.web.global.vo;
 
 import com.ketan.api.model.vo.seo.SeoTagVo;
+import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
+import com.ketan.service.sitemap.model.SiteCntVo;
 import com.ketan.web.config.GlobalViewConfig;
 import lombok.Data;
 
@@ -21,6 +23,25 @@ public class GlobalVo {
      */
     private GlobalViewConfig siteInfo;
 
+    /**
+     * 今日的站点统计详细信息
+     */
+    private SiteCntVo todaySiteStatisticInfo;
+
+    /**
+     * 在线用户人数
+     */
+    private Integer onlineCnt;
+
+    /**
+     * 登录用户信息
+     */
+    private BaseUserInfoDTO user;
+
+    /**
+     * 消息通知数量
+     */
+    private Integer msgNum;
 
     /**
      * 环境
@@ -43,4 +64,9 @@ public class GlobalVo {
     private String jsonLd;
 
     private String currentDomain;
+
+    /**
+     * 站点统计信息
+     */
+    private SiteCntVo siteStatisticInfo;
 }

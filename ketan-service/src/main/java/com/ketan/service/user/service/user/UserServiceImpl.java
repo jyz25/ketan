@@ -7,22 +7,25 @@ import com.ketan.api.model.vo.constants.StatusEnum;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
+import com.ketan.core.util.IpUtil;
 import com.ketan.service.article.repository.dao.ArticleDao;
 import com.ketan.service.statistics.service.CountService;
 import com.ketan.service.user.converter.UserConverter;
 import com.ketan.service.user.repository.dao.UserDao;
 import com.ketan.service.user.repository.dao.UserRelationDao;
+import com.ketan.service.user.repository.entity.IpInfo;
 import com.ketan.service.user.repository.entity.UserInfoDO;
 import com.ketan.service.user.repository.entity.UserRelationDO;
 import com.ketan.service.user.service.UserService;
+import com.ketan.service.user.service.help.UserSessionHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ArticleDao articleDao;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     @Override
     public BaseUserInfoDTO queryBasicUserInfo(Long userId) {
         UserInfoDO user = userDao.getByUserId(userId);
@@ -57,6 +63,39 @@ public class UserServiceImpl implements UserService {
             throw ExceptionUtil.of(StatusEnum.USER_NOT_EXISTS, "userId=" + userIds);
         }
         return users.stream().map(UserConverter::toSimpleInfo).collect(Collectors.toList());
+    }
+
+    @Override
+    public BaseUserInfoDTO getAndUpdateUserIpInfoBySessionId(String session, String clientIp) {
+        if (StringUtils.isBlank(session)) {
+            return null;
+        }
+
+        Long userId = userSessionHelper.getUserIdBySession(session);
+        if (userId == null) {
+            return null;
+        }
+
+        // 查询用户信息，并更新最后一次使用的ip
+        UserInfoDO user = userDao.getByUserId(userId);
+        if (user == null) {
+            throw ExceptionUtil.of(StatusEnum.USER_NOT_EXISTS, "userId=" + userId);
+        }
+
+        IpInfo ip = user.getIp();
+        if (clientIp != null && !Objects.equals(ip.getLatestIp(), clientIp)) {
+            // ip不同，需要更新
+            ip.setLatestIp(clientIp);
+            ip.setLatestRegion(IpUtil.getLocationByIp(clientIp).toRegionStr());
+
+            if (ip.getFirstIp() == null) {
+                ip.setFirstIp(clientIp);
+                ip.setFirstRegion(ip.getLatestRegion());
+            }
+            userDao.updateById(user);
+        }
+
+        return UserConverter.toDTO(user);
     }
 
 

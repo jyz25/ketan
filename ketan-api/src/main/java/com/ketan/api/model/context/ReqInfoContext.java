@@ -1,6 +1,8 @@
 package com.ketan.api.model.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import com.ketan.api.model.vo.seo.Seo;
+import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import lombok.Data;
 
 import java.security.Principal;
@@ -43,6 +45,50 @@ public class ReqInfoContext {
          * 登录的会话
          */
         private String session;
+
+        private String deviceId;
+
+        /**
+         * post 表单参数
+         */
+        private String payload;
+
+        /**
+         * 访问的域名
+         */
+        private String host;
+
+        /**
+         * 设备信息
+         */
+        private String userAgent;
+
+        /**
+         * 客户端ip
+         */
+        private String clientIp;
+
+        /**
+         * referer
+         */
+        private String referer;
+
+        /**
+         * 访问路径
+         */
+        private String path;
+
+        /**
+         * 消息数量
+         */
+        private Integer msgNum;
+
+        private Seo seo;
+
+        /**
+         * 用户信息
+         */
+        private BaseUserInfoDTO user;
 
         @Override
         public String getName() {

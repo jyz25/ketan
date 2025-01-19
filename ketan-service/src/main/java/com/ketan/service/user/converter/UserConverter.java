@@ -2,6 +2,7 @@ package com.ketan.service.user.converter;
 
 
 import com.ketan.api.model.enums.RoleEnum;
+import com.ketan.api.model.enums.user.UserAIStatEnum;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;

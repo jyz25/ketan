@@ -59,8 +59,7 @@ public class IndexRecommendHelper {
         vo.setHomeCarouselList(homeCarouselList());
         vo.setSideBarItems(sidebarService.queryHomeSidebarList());
         vo.setUser(loginInfo());
-
-        return null;
+        return vo;
     }
 
     private UserStatisticInfoDTO loginInfo() {

@@ -19,6 +19,8 @@ public class GlobalViewConfig {
 
     private String websiteName;
 
+    private String websiteRecord;
+
     /**
      * oss的地址
      */
@@ -29,4 +31,17 @@ public class GlobalViewConfig {
 
 
     private String contactMeStarQrCode;
+
+    /**
+     * 健康知识的跳转链接
+     */
+    private String zsxqUrl;
+
+    /**
+     * 知识海报的一个展示的图片地址
+     */
+    private String zsxqImgUrl;
+
+    private String host;
+
 }

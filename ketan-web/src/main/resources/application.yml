@@ -4,15 +4,27 @@ spring:
 
 
 
-
-
 # 默认的数据库名
 database:
   name: ketan
 
+security:
+  salt: tech_π # 密码加盐, 更安全的做法是每个用户的密码使用独立的盐，并将其保存在用户表中
+  salt-index: 3 # 盐插入的位置
 
 # mybatis 相关统一配置
 mybatis-plus:
   configuration:
     #开启下划线转驼峰
     map-underscore-to-camel-case: true
+
+
+ketan:
+  sensitive: # 敏感词校验相关配置
+    enable: true
+    deny: # 自定义的敏感词，英文逗号分割
+    allow: # 自定义的非敏感词，英文逗号分割
+  jwt:
+    issuer: ketan # 签发者
+    secret: hello_world # 签名密钥
+    expire: 2592000000 # jwt的有效期，默认30天
