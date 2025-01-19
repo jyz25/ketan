@@ -6,6 +6,6 @@ view:
     websiteRecord: 暂无备案（个人测试使用）
     oss:
     host: http://127.0.0.1:${server.port}
-    contactMeWxQrCode: https://fengyecommunity.oss-cn-chengdu.aliyuncs.com/weixin/ye-qrcode.jpg  # 公众号二维码
+    contactMeWxQrCode: https://fengyecommunity.oss-cn-chengdu.aliyuncs.com/weixin/tan-qrcode.jpg  # 公众号二维码
 
 

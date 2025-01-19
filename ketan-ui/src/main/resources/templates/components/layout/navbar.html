@@ -215,9 +215,9 @@
                     </div>
                   </div>
                 </div>
-                <a class="clickable" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">
-                  输入VIP码，畅享VIP服务
-                </a>
+                <span class="clickable">
+                  其他登录敬请期待
+                </span>
               </div>
             </div>
             <div class="tabpane-container">
@@ -249,8 +249,9 @@
               </p>
             </div>
           </div>
+          <!--
           <div class="mock-login" th:if="${!#strings.equals(global.env, 'prod')}">
-            <!-- 非生产环境，使用模拟登陆  -->
+            &lt;!&ndash; 非生产环境，使用模拟登陆  &ndash;&gt;
             <button
                     id="mockLogin2"
                     type="button"
@@ -269,13 +270,15 @@
               一键登录
             </button>
           </div>
+          -->
 
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 绑定星球用户 -->
+  <!--
+  &lt;!&ndash; 绑定星球用户 &ndash;&gt;
   <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -288,7 +291,7 @@
         <div class="modal-body">
           <div class="auth-body">
             <div class="register-main">
-              <!-- 分为上下两部分，下面是其他登录比如说 GitHub、验证码 -->
+              &lt;!&ndash; 分为上下两部分，下面是其他登录比如说 GitHub、验证码 &ndash;&gt;
               <div class="panel">
                 <h1 class="title">
                   <a target="_blank"
@@ -316,7 +319,7 @@
                   <div class="form-group">
                     <input type="text" placeholder="微信搜 叶守护 回复邀请码获取，也可不填" class="form-control form-control-sm" id="invitationCode" autocomplete="off">
                   </div>
-                  <!-- 绑定过会直接登录 -->
+                  &lt;!&ndash; 绑定过会直接登录 &ndash;&gt;
                   <button type="submit"
                           class="btn btn-primary btn-block btn-sm"
                           th:text="${global.isLogin} ? '绑定' : '绑定后登录'">绑定/绑定后登录</button>
@@ -340,6 +343,7 @@
       </div>
     </div>
   </div>
+  -->
 
   <script
           src="/js/mock.js"

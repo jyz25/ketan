@@ -44,4 +44,23 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         return userMapper.selectOne(queryUser);
     }
 
+    public void saveUser(UserDO user) {
+        if (user.getId() == null) {
+            userMapper.insert(user);
+        } else {
+            userMapper.updateById(user);
+        }
+    }
+
+
+    /**
+     * 三方账号登录方式
+     *
+     * @param accountId
+     * @return
+     */
+    public UserDO getByThirdAccountId(String accountId) {
+        return userMapper.getByThirdAccountId(accountId);
+    }
+
 }

@@ -22,6 +22,10 @@
             <groupId>org.kt</groupId>
             <artifactId>ketan-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
 
         <!--引入UI-->
         <dependency>

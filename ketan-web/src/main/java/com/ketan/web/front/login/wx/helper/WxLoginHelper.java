@@ -133,4 +133,34 @@ public class WxLoginHelper {
         verifyCodeCache.put(newCode, lastSse);
         return newCode;
     }
+
+
+    /**
+     * 微信公众号登录
+     *
+     * @param verifyCode 用户输入的登录验证码
+     * @return
+     */
+    public boolean login(String verifyCode) {
+        // 通过验证码找到对应的长连接
+        SseEmitter sseEmitter = verifyCodeCache.getIfPresent(verifyCode);
+        if (sseEmitter == null) {
+            return false;
+        }
+
+        String session = sessionService.loginByWx(ReqInfoContext.getReqInfo().getUserId());
+        try {
+            // 登录成功，写入session
+            sseEmitter.send(session);
+            // 设置cookie的路径
+            sseEmitter.send("login#" + LoginService.SESSION_KEY + "=" + session + ";path=/;");
+            return true;
+        } catch (Exception e) {
+            log.error("登录异常: {}", verifyCode, e);
+        } finally {
+            sseEmitter.complete();
+            verifyCodeCache.invalidate(verifyCode);
+        }
+        return false;
+    }
 }
