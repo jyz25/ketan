@@ -40,4 +40,15 @@ public class UserPwdEncoder {
         return DigestUtils.md5DigestAsHex(plainPwd.getBytes(StandardCharsets.UTF_8));
     }
 
+    public static void main(String[] args) {
+        String plainPwd = "xiongda";
+        if (plainPwd.length() > 3) {
+            plainPwd = plainPwd.substring(0, 3) + "tech_π" + plainPwd.substring(3);
+        } else {
+            plainPwd = plainPwd + "tech_";
+        }
+        System.out.println(DigestUtils.md5DigestAsHex(plainPwd.getBytes(StandardCharsets.UTF_8)));
+
+    }
+
 }

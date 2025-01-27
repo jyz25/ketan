@@ -22,4 +22,24 @@ public interface CountService {
      * @return 返回用户的 收藏、点赞、文章、粉丝、关注，总的文章阅读数
      */
     UserStatisticInfoDTO queryUserStatisticInfo(Long userId);
+
+    /**
+     * 文章计数+1
+     *
+     * @param authorUserId 作者
+     * @param articleId    文章
+     * @return 计数器
+     */
+    void incrArticleReadCount(Long authorUserId, Long articleId);
+
+
+    /**
+     * 获取评论点赞数量
+     *
+     * @param commentId
+     * @return
+     */
+    Long queryCommentPraiseCount(Long commentId);
+
+
 }

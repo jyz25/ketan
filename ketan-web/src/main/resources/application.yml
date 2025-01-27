@@ -1,6 +1,6 @@
 spring:
   config:
-    import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml
+    import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml,application-rabbitmq.yml
 
 
 

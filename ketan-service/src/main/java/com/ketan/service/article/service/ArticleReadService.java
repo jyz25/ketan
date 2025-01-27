@@ -11,6 +11,33 @@ import java.util.Map;
 
 public interface ArticleReadService {
 
+    /**
+     * 查询基础的文章信息
+     *
+     * @param articleId
+     * @return
+     */
+    ArticleDO queryBasicArticle(Long articleId);
+
+
+    /**
+     * 查询文章详情，包括正文内容，分类、标签等信息
+     *
+     * @param articleId
+     * @return
+     */
+    ArticleDTO queryDetailArticleInfo(Long articleId);
+
+
+    /**
+     * 查询文章所有的关联信息，正文，分类，标签，阅读计数+1，当前登录用户是否点赞、评论过
+     *
+     * @param articleId   文章id
+     * @param currentUser 当前查看的用户ID
+     * @return
+     */
+    ArticleDTO queryFullArticleInfo(Long articleId, Long currentUser);
+
     // 根据分类统计文章数
     Map<Long, Long> queryArticleCountsByCategory();
 
@@ -45,5 +72,7 @@ public interface ArticleReadService {
      * @return
      */
     PageListVo<SimpleArticleDTO> queryHotArticlesForRecommend(PageParam pageParam);
+
+
 
 }

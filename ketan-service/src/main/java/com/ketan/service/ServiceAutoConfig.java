@@ -17,7 +17,8 @@ import org.springframework.context.annotation.Configuration;
         "com.ketan.service.user.repository.mapper",
         "com.ketan.service.config.repository.mapper",
         "com.ketan.service.notify.repository.mapper",
-        "com.ketan.service.statistics.repository.mapper"
+        "com.ketan.service.statistics.repository.mapper",
+        "com.ketan.service.comment.repository.mapper"
 })
 public class ServiceAutoConfig {
 }

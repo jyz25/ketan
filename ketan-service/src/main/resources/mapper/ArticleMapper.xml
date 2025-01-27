@@ -3,6 +3,12 @@
 <mapper namespace="com.ketan.service.article.repository.mapper.ArticleMapper">
 
 
+    <sql id="limit">
+        <if test="pageParam != null">
+            limit #{pageParam.offset}, #{pageParam.limit}
+        </if>
+    </sql>
+
     <select id="listArticlesByReadCounts"
             resultType="com.ketan.api.model.vo.article.dto.SimpleArticleDTO">
         select rc.document_id as id, a.title as title, a.create_time as createTime
@@ -23,5 +29,17 @@
           and status = ${@com.ketan.api.model.enums.PushStatusEnum@ONLINE.code}
           and deleted = ${@com.ketan.api.model.enums.YesOrNoEnum@NO.code}
         group by year
+    </select>
+
+
+    <select id="listArticlesByUserIdOrderByReadCounts"
+            resultType="com.ketan.api.model.vo.article.dto.SimpleArticleDTO">
+        select rc.document_id as id, a.title as title, a.create_time as createTime
+        from read_count as rc left join article as a on rc.document_id = a.id
+        where rc.document_type = ${@com.ketan.api.model.enums.DocumentTypeEnum@ARTICLE.code}
+        and a.status = ${@com.ketan.api.model.enums.PushStatusEnum@ONLINE.code}
+        and a.deleted = ${@com.ketan.api.model.enums.YesOrNoEnum@NO.code} and a.user_id = #{userId} order
+        by rc.cnt desc
+        <include refid="limit"/>
     </select>
 </mapper>
