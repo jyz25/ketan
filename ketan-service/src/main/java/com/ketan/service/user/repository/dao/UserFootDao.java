@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ketan.api.model.enums.DocumentTypeEnum;
 import com.ketan.api.model.enums.PraiseStatEnum;
+import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.service.user.repository.entity.UserFootDO;
 import com.ketan.service.user.repository.mapper.UserFootMapper;
@@ -25,6 +26,28 @@ public class UserFootDao extends ServiceImpl<UserFootMapper, UserFootDO> {
 
     public List<SimpleUserInfoDTO> listDocumentPraisedUsers(Long documentId, Integer type, int size) {
         return baseMapper.listSimpleUserInfosByArticleId(documentId, type, size);
+    }
+
+    /**
+     * 查询用户阅读的文章列表
+     *
+     * @param userId
+     * @param pageParam
+     * @return
+     */
+    public List<Long> listReadArticleByUserId(Long userId, PageParam pageParam) {
+        return baseMapper.listReadArticleByUserId(userId, pageParam);
+    }
+
+    /**
+     * 查询用户收藏的文章列表
+     *
+     * @param userId
+     * @param pageParam
+     * @return
+     */
+    public List<Long> listCollectedArticlesByUserId(Long userId, PageParam pageParam) {
+        return baseMapper.listCollectedArticlesByUserId(userId, pageParam);
     }
 
 

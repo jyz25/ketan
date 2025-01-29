@@ -2,6 +2,7 @@ package com.ketan.service.user.repository.dao;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ketan.api.model.enums.YesOrNoEnum;
@@ -50,6 +51,21 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         } else {
             userMapper.updateById(user);
         }
+    }
+
+    public void updateUserInfo(UserInfoDO user) {
+        UserInfoDO record = getByUserId(user.getUserId());
+        if (record.equals(user)) {
+            return;
+        }
+        if (StringUtils.isEmpty(user.getPhoto())) {
+            user.setPhoto(null);
+        }
+        if (StringUtils.isEmpty(user.getUserName())) {
+            user.setUserName(null);
+        }
+        user.setId(record.getId());
+        updateById(user);
     }
 
 

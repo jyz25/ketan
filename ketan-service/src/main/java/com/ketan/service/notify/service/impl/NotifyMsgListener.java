@@ -40,6 +40,7 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
     @SuppressWarnings("unchecked")
     @Override
     public void onApplicationEvent(NotifyMsgEvent<T> msgEvent) {
+        log.info("进入监听器 onApplicationEvent");
         switch (msgEvent.getNotifyType()) {
             case COMMENT:
                 saveCommentNotify((NotifyMsgEvent<CommentDO>) msgEvent);

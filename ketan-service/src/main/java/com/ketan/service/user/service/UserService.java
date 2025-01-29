@@ -1,5 +1,6 @@
 package com.ketan.service.user.service;
 
+import com.ketan.api.model.vo.user.UserInfoSaveReq;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
@@ -45,5 +46,7 @@ public interface UserService {
      */
     BaseUserInfoDTO getAndUpdateUserIpInfoBySessionId(String session, String clientIp);
 
+
+    void saveUserInfo(UserInfoSaveReq req);
 
 }

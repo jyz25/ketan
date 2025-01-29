@@ -1,5 +1,6 @@
 package com.ketan.service.article.service;
 
+import com.ketan.api.model.enums.HomeSelectEnum;
 import com.ketan.api.model.vo.PageListVo;
 import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.article.dto.ArticleDTO;
@@ -18,6 +19,18 @@ public interface ArticleReadService {
      * @return
      */
     ArticleDO queryBasicArticle(Long articleId);
+
+
+    /**
+     * 查询用户的文章列表
+     *
+     * @param userId
+     * @param pageParam
+     * @param select
+     * @return
+     */
+    PageListVo<ArticleDTO> queryArticlesByUserAndType(Long userId, PageParam pageParam, HomeSelectEnum select);
+
 
 
     /**

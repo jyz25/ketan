@@ -27,10 +27,7 @@ import com.ketan.service.article.repository.mapper.ReadCountMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 文章相关 DB操作
@@ -76,6 +73,21 @@ public class ArticleDao extends ServiceImpl<ArticleMapper, ArticleDO> {
         return dto;
     }
 
+    // ------------- 文章列表查询 --------------
+
+    public List<ArticleDO> listArticlesByUserId(Long userId, PageParam pageParam) {
+        LambdaQueryWrapper<ArticleDO> query = Wrappers.lambdaQuery();
+        query.eq(ArticleDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .eq(ArticleDO::getUserId, userId)
+                .last(PageParam.getLimitSql(pageParam))
+                .orderByDesc(ArticleDO::getId);
+        if (!Objects.equals(ReqInfoContext.getReqInfo().getUserId(), userId)) {
+            // 作者本人，可以查看草稿、审核、上线文章；其他用户，只能查看上线的文章
+            query.eq(ArticleDO::getStatus, PushStatusEnum.ONLINE.getCode());
+        }
+        return baseMapper.selectList(query);
+    }
+
 
     // ------------ article content  ----------------
 
@@ -119,6 +131,7 @@ public class ArticleDao extends ServiceImpl<ArticleMapper, ArticleDO> {
         } else {
             // fixme: 这里存在并发覆盖问题，推荐使用 update read_count set cnt = cnt + 1 where id = xxx
             record.setCnt(record.getCnt() + 1);
+            record.setUpdateTime(new Date());
             readCountMapper.updateById(record);
         }
         return record.getCnt();

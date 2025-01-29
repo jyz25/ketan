@@ -11,6 +11,7 @@ import com.ketan.service.comment.repository.entity.CommentDO;
 import com.ketan.service.statistics.constants.CountConstants;
 import com.ketan.service.user.repository.entity.UserFootDO;
 import com.ketan.service.user.repository.entity.UserRelationDO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import javax.annotation.Resource;
  * 用户活跃相关的消息监听器
  */
 @Component
+@Slf4j
 public class UserStatisticEventListener {
     @Resource
     private ArticleDao articleDao;
@@ -30,9 +32,10 @@ public class UserStatisticEventListener {
      *
      * @param msgEvent
      */
-//    @EventListener(classes = NotifyMsgEvent.class)
-//    @Async
+    @EventListener(classes = NotifyMsgEvent.class)
+    @Async
     public void notifyMsgListener(NotifyMsgEvent msgEvent) {
+        log.info("进入监听器 notifyMsgListener");
         switch (msgEvent.getNotifyType()) {
             case COMMENT:
             case REPLY:

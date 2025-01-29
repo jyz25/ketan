@@ -2,6 +2,7 @@ package com.ketan.service.user.service.userfoot;
 
 import com.ketan.api.model.enums.DocumentTypeEnum;
 import com.ketan.api.model.enums.OperateTypeEnum;
+import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.service.comment.repository.entity.CommentDO;
 import com.ketan.service.user.repository.dao.UserFootDao;
@@ -63,6 +64,17 @@ public class UserFootServiceImpl implements UserFootService {
             userFootDao.updateById(readUserFootDO);
         }
         return readUserFootDO;
+    }
+
+
+    @Override
+    public List<Long> queryUserReadArticleList(Long userId, PageParam pageParam) {
+        return userFootDao.listReadArticleByUserId(userId, pageParam);
+    }
+
+    @Override
+    public List<Long> queryUserCollectionArticleList(Long userId, PageParam pageParam) {
+        return userFootDao.listCollectedArticlesByUserId(userId, pageParam);
     }
 
     @Override

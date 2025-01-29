@@ -4,6 +4,7 @@ import com.ketan.api.model.context.ReqInfoContext;
 import com.ketan.api.model.exception.ExceptionUtil;
 import com.ketan.api.model.vo.article.dto.YearArticleDTO;
 import com.ketan.api.model.vo.constants.StatusEnum;
+import com.ketan.api.model.vo.user.UserInfoSaveReq;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
@@ -96,6 +97,12 @@ public class UserServiceImpl implements UserService {
         }
 
         return UserConverter.toDTO(user);
+    }
+
+    @Override
+    public void saveUserInfo(UserInfoSaveReq req) {
+        UserInfoDO userInfoDO = UserConverter.toDO(req);
+        userDao.updateUserInfo(userInfoDO);
     }
 
 

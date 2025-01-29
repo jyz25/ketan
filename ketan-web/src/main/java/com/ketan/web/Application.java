@@ -24,7 +24,7 @@ import java.util.List;
 
 @ServletComponentScan // 注入 OnlineUserCountListener
 @SpringBootApplication
-//@EnableAsync
+@EnableAsync
 public class Application implements WebMvcConfigurer {
 
     @Autowired

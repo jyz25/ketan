@@ -23,10 +23,9 @@ import com.ketan.service.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -78,6 +77,50 @@ public class ArticleReadServiceImpl implements ArticleReadService {
     public ArticleDO queryBasicArticle(Long articleId) {
         return articleDao.getById(articleId);
     }
+
+    @Override
+    public PageListVo<ArticleDTO> queryArticlesByUserAndType(Long userId, PageParam pageParam, HomeSelectEnum select) {
+        List<ArticleDO> records = null;
+        if (select == HomeSelectEnum.ARTICLE) {
+            // 用户的文章列表
+            records = articleDao.listArticlesByUserId(userId, pageParam);
+        } else if (select == HomeSelectEnum.READ) {
+            // 用户的阅读记录
+            List<Long> articleIds = userFootService.queryUserReadArticleList(userId, pageParam);
+            records = CollectionUtils.isEmpty(articleIds) ? Collections.emptyList() : articleDao.listByIds(articleIds);
+            records = sortByIds(articleIds, records);
+        } else if (select == HomeSelectEnum.COLLECTION) {
+            // 用户的收藏列表
+            List<Long> articleIds = userFootService.queryUserCollectionArticleList(userId, pageParam);
+            records = CollectionUtils.isEmpty(articleIds) ? Collections.emptyList() : articleDao.listByIds(articleIds);
+            records = sortByIds(articleIds, records);
+        }
+
+        if (CollectionUtils.isEmpty(records)) {
+            return PageListVo.emptyVo();
+        }
+        return buildArticleListVo(records, pageParam.getPageSize());
+    }
+
+    /**
+     * fixme @楼仔 这个排序逻辑看着像是有问题的样子
+     *
+     * @param articleIds
+     * @param records
+     * @return
+     */
+    private List<ArticleDO> sortByIds(List<Long> articleIds, List<ArticleDO> records) {
+        List<ArticleDO> articleDOS = new ArrayList<>();
+        Map<Long, ArticleDO> articleDOMap = records.stream().collect(Collectors.toMap(ArticleDO::getId, t -> t));
+        articleIds.forEach(articleId -> {
+            if (articleDOMap.containsKey(articleId)) {
+                articleDOS.add(articleDOMap.get(articleId));
+            }
+        });
+        return articleDOS;
+    }
+
+
 
 
 

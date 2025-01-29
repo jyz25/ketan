@@ -2,6 +2,7 @@ package com.ketan.service.user.service;
 
 import com.ketan.api.model.enums.DocumentTypeEnum;
 import com.ketan.api.model.enums.OperateTypeEnum;
+import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
 import com.ketan.service.comment.repository.entity.CommentDO;
 import com.ketan.service.user.repository.entity.UserFootDO;
@@ -22,6 +23,25 @@ public interface UserFootService {
      */
     UserFootDO saveOrUpdateUserFoot(DocumentTypeEnum documentType, Long documentId, Long authorId, Long userId, OperateTypeEnum operateTypeEnum);
 
+
+    /**
+     * 查询已读文章列表
+     *
+     * @param userId
+     * @param pageParam
+     * @return
+     */
+    List<Long> queryUserReadArticleList(Long userId, PageParam pageParam);
+
+
+    /**
+     * 查询收藏文章列表
+     *
+     * @param userId
+     * @param pageParam
+     * @return
+     */
+    List<Long> queryUserCollectionArticleList(Long userId, PageParam pageParam);
 
     /**
      * 查询文章的点赞用户信息
