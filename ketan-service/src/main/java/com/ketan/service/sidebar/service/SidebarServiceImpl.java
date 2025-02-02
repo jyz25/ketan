@@ -41,6 +41,32 @@ public class SidebarServiceImpl implements SidebarService {
     @Autowired
     private ArticleDao articleDao;
 
+    /**
+     * 查询教程的侧边栏信息
+     *
+     * @return
+     */
+    @Override
+    @Cacheable(key = "'columnSidebar'", cacheManager = "caffeineCacheManager", cacheNames = "column")
+    public List<SideBarDTO> queryColumnSidebarList() {
+        List<SideBarDTO> list = new ArrayList<>();
+        list.add(subscribeSideBar());
+        return list;
+    }
+
+
+    /**
+     * 订阅公众号
+     *
+     * @return
+     */
+    private SideBarDTO subscribeSideBar() {
+        return new SideBarDTO().setTitle("订阅").setSubTitle("kindow")
+                .setImg("/forum/image/yeshouhu.jpg")
+                .setContent("10本IT电子书")
+                .setStyle(SidebarStyleEnum.SUBSCRIBE.getStyle());
+    }
+
 
     /**
      * 使用caffeine本地缓存，来处理侧边栏不怎么变动的消息
@@ -189,7 +215,6 @@ public class SidebarServiceImpl implements SidebarService {
         List<SideBarItemDTO> items = vo.getList().stream().map(s -> new SideBarItemDTO().setTitle(s.getTitle()).setUrl("/article/detail/" + s.getId()).setTime(s.getCreateTime().getTime())).collect(Collectors.toList());
         return new SideBarDTO().setTitle("热门文章").setItems(items).setStyle(SidebarStyleEnum.ARTICLES.getStyle());
     }
-
 
 
     @Autowired

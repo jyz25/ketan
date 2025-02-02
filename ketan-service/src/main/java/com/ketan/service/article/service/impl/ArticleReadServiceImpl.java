@@ -10,6 +10,7 @@ import com.ketan.api.model.vo.article.dto.CategoryDTO;
 import com.ketan.api.model.vo.article.dto.SimpleArticleDTO;
 import com.ketan.api.model.vo.constants.StatusEnum;
 import com.ketan.api.model.vo.user.dto.BaseUserInfoDTO;
+import com.ketan.core.util.ArticleUtil;
 import com.ketan.service.article.conveter.ArticleConverter;
 import com.ketan.service.article.repository.dao.ArticleDao;
 import com.ketan.service.article.repository.dao.ArticleTagDao;
@@ -21,10 +22,14 @@ import com.ketan.service.user.repository.entity.UserFootDO;
 import com.ketan.service.user.service.UserFootService;
 import com.ketan.service.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,11 +53,16 @@ public class ArticleReadServiceImpl implements ArticleReadService {
     @Autowired
     ArticleTagDao articleTagDao;
 
+    // 是否开启ES
+    @Value("${elasticsearch.open:false}")
+    private Boolean openES;
+
     @Autowired
     private CountService countService;
 
     @Autowired
     private UserService userService;
+
     @Override
     public Map<Long, Long> queryArticleCountsByCategory() {
         return articleDao.countArticleByCategoryId();
@@ -76,6 +86,25 @@ public class ArticleReadServiceImpl implements ArticleReadService {
     @Override
     public ArticleDO queryBasicArticle(Long articleId) {
         return articleDao.getById(articleId);
+    }
+
+    @Override
+    public List<SimpleArticleDTO> querySimpleArticleBySearchKey(String key) {
+        // todo 当key为空时，返回热门推荐
+        if (StringUtils.isBlank(key)) {
+            return Collections.emptyList();
+        }
+        key = key.trim();
+        List<ArticleDO> records = articleDao.listSimpleArticlesByBySearchKey(key);
+        return records.stream().map(s -> new SimpleArticleDTO().setId(s.getId()).setTitle(s.getTitle()))
+                .collect(Collectors.toList());
+        // todo 待添加整合es 感兴趣再做吧 不该是重点
+    }
+
+
+    @Override
+    public String generateSummary(String content) {
+        return ArticleUtil.pickSummary(content);
     }
 
     @Override
@@ -121,9 +150,6 @@ public class ArticleReadServiceImpl implements ArticleReadService {
     }
 
 
-
-
-
     /**
      * 查询文章所有的关联信息，正文，分类，标签，阅读计数，当前登录用户是否点赞、评论过
      *
@@ -160,7 +186,6 @@ public class ArticleReadServiceImpl implements ArticleReadService {
         article.setPraisedUsers(userFootService.queryArticlePraisedUsers(articleId));
         return article;
     }
-
 
 
     /**
@@ -214,7 +239,6 @@ public class ArticleReadServiceImpl implements ArticleReadService {
         dto.setAuthorAvatar(author.getPhoto());
         return dto;
     }
-
 
 
 }

@@ -1,6 +1,5 @@
 package com.ketan.api.model.vo.article.dto;
 
-
 import com.ketan.api.model.enums.SourceTypeEnum;
 import com.ketan.api.model.vo.user.dto.ArticleFootCountDTO;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;

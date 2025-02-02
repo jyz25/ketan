@@ -44,4 +44,10 @@ public class GlobalViewConfig {
 
     private String host;
 
+    // 知识星球文章可阅读数
+    private String zsxqArticleReadCount;
+
+    // 需要登录文章可阅读数
+    private String needLoginArticleReadCount;
+
 }

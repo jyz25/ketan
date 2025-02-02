@@ -19,6 +19,14 @@ public class CategoryDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     // 类目名称
     private String categoryName;
 

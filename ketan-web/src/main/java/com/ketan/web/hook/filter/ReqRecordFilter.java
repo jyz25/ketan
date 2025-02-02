@@ -195,6 +195,8 @@ public class ReqRecordFilter implements Filter {
     private boolean isStaticURI(HttpServletRequest request) {
         return request == null
                 || request.getRequestURI().endsWith("css")
+                || request.getRequestURI().endsWith("gif")
+                || request.getRequestURI().endsWith("woff2")
                 || request.getRequestURI().endsWith("js")
                 || request.getRequestURI().endsWith("png")
                 || request.getRequestURI().endsWith("jpg")

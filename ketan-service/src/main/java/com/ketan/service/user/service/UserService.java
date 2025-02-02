@@ -11,6 +11,15 @@ import java.util.List;
 public interface UserService {
 
     /**
+     * 批量查询用户基本信息
+     *
+     * @param userIds
+     * @return
+     */
+    List<BaseUserInfoDTO> batchQueryBasicUserInfo(Collection<Long> userIds);
+
+
+    /**
      * 查询用户基本信息
      * todo: 可以做缓存优化
      *

@@ -20,6 +20,23 @@ public interface ArticleReadService {
      */
     ArticleDO queryBasicArticle(Long articleId);
 
+    /**
+     * 根据关键词匹配标题，查询用于推荐的文章列表，只返回 articleId + title
+     *
+     * @param key
+     * @return
+     */
+    List<SimpleArticleDTO> querySimpleArticleBySearchKey(String key);
+
+    /**
+     * 提前文章摘要
+     *
+     * @param content
+     * @return
+     */
+    String generateSummary(String content);
+
+
 
     /**
      * 查询用户的文章列表

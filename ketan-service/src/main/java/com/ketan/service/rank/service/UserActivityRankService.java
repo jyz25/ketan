@@ -23,5 +23,4 @@ public interface UserActivityRankService {
     List<RankItemDTO> queryRankList(ActivityRankTimeEnum time, int size);
 
 
-
 }

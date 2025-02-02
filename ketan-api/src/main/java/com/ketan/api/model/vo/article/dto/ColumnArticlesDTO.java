@@ -28,7 +28,7 @@ public class ColumnArticlesDTO {
      * 1 要求登录阅读
      * 2 限时免费，若当前时间超过限时免费期，则调整为登录阅读
      *
-     * @see ColumnTypeEnum#getType()
+     * @see com.ketan.api.model.enums.column.ColumnTypeEnum#getType()
      */
     private Integer readType;
 

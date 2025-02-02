@@ -3,6 +3,7 @@ package com.ketan.service.article.repository.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Maps;
@@ -42,6 +43,67 @@ public class ArticleDao extends ServiceImpl<ArticleMapper, ArticleDO> {
 
     @Resource
     private ReadCountMapper readCountMapper;
+
+    /**
+     * 通过关键词，从标题中找出相似的进行推荐，只返回主键 + 标题
+     *
+     * @param key
+     * @return
+     */
+    public List<ArticleDO> listSimpleArticlesByBySearchKey(String key) {
+        LambdaQueryWrapper<ArticleDO> query = Wrappers.lambdaQuery();
+        query.eq(ArticleDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .eq(ArticleDO::getStatus, PushStatusEnum.ONLINE.getCode())
+                .and(!StringUtils.isEmpty(key),
+                        v -> v.like(ArticleDO::getTitle, key)
+                                .or()
+                                .like(ArticleDO::getShortTitle, key)
+                );
+        query.select(ArticleDO::getId, ArticleDO::getTitle, ArticleDO::getShortTitle)
+                .last("limit 10")
+                .orderByDesc(ArticleDO::getId);
+        return baseMapper.selectList(query);
+    }
+
+
+
+    /**
+     * 更正文章正文
+     *
+     * @param articleId
+     * @param content
+     * @param update    true 表示更新最后一条记录； false 表示新插入一个新的记录
+     */
+    public void updateArticleContent(Long articleId, String content, boolean update) {
+        if (update) {
+            articleDetailMapper.updateContent(articleId, content);
+        } else {
+            ArticleDetailDO latest = findLatestDetail(articleId);
+            latest.setVersion(latest.getVersion() + 1);
+            latest.setId(null);
+            latest.setContent(content);
+            articleDetailMapper.insert(latest);
+        }
+    }
+
+    /**
+     * 保存文章正文
+     *
+     * @param articleId
+     * @param content
+     * @return
+     */
+    public Long saveArticleContent(Long articleId, String content) {
+        ArticleDetailDO detail = new ArticleDetailDO();
+        detail.setArticleId(articleId);
+        detail.setContent(content);
+        detail.setVersion(1L);
+        articleDetailMapper.insert(detail);
+        return detail.getId();
+    }
+
+
+
 
     /**
      * 作者的热门文章推荐，适用于作者的详情页侧边栏

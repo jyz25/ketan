@@ -1,10 +1,18 @@
 package com.ketan.service.article.conveter;
 
+import com.ketan.api.model.enums.ArticleTypeEnum;
 import com.ketan.api.model.enums.SourceTypeEnum;
+import com.ketan.api.model.enums.YesOrNoEnum;
+import com.ketan.api.model.vo.article.ArticlePostReq;
 import com.ketan.api.model.vo.article.dto.ArticleDTO;
 import com.ketan.api.model.vo.article.dto.CategoryDTO;
+import com.ketan.api.model.vo.article.dto.TagDTO;
 import com.ketan.service.article.repository.entity.ArticleDO;
 import com.ketan.service.article.repository.entity.CategoryDO;
+import com.ketan.service.article.repository.entity.TagDO;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Kindow
@@ -13,6 +21,26 @@ import com.ketan.service.article.repository.entity.CategoryDO;
  */
 public class ArticleConverter {
 
+
+    public static ArticleDO toArticleDo(ArticlePostReq req, Long author) {
+        ArticleDO article = new ArticleDO();
+        // 设置作者ID
+        article.setUserId(author);
+        article.setId(req.getArticleId());
+        article.setTitle(req.getTitle());
+        article.setShortTitle(req.getShortTitle());
+        article.setArticleType(ArticleTypeEnum.valueOf(req.getArticleType().toUpperCase()).getCode());
+        article.setPicture(req.getCover() == null ? "" : req.getCover());
+        article.setCategoryId(req.getCategoryId());
+        article.setSource(req.getSource());
+        article.setSourceUrl(req.getSourceUrl());
+        article.setSummary(req.getSummary());
+        article.setStatus(req.pushStatus().getCode());
+        article.setDeleted(req.deleted() ? YesOrNoEnum.YES.getCode() : YesOrNoEnum.NO.getCode());
+        return article;
+    }
+
+
     public static CategoryDTO toDto(CategoryDO category) {
         CategoryDTO dto = new CategoryDTO();
         dto.setCategory(category.getCategoryName());
@@ -20,6 +48,27 @@ public class ArticleConverter {
         dto.setRank(category.getRank());
         dto.setStatus(category.getStatus());
         dto.setSelected(false);
+        return dto;
+    }
+
+    public static List<TagDTO> toDtoList(List<TagDO> tags) {
+        return tags.stream().map(ArticleConverter::toDto).collect(Collectors.toList());
+    }
+
+    /**
+     * do转换
+     *
+     * @param tag
+     * @return
+     */
+    public static TagDTO toDto(TagDO tag) {
+        if (tag == null) {
+            return null;
+        }
+        TagDTO dto = new TagDTO();
+        dto.setTag(tag.getTagName());
+        dto.setTagId(tag.getId());
+        dto.setStatus(tag.getStatus());
         return dto;
     }
 

@@ -6,6 +6,15 @@ import com.ketan.api.model.vo.recommend.SideBarDTO;
 import java.util.List;
 
 public interface SidebarService {
+
+    /**
+     * 查询教程的侧边栏信息
+     *
+     * @return
+     */
+    List<SideBarDTO> queryColumnSidebarList();
+
+
     /**
      * 查询首页的侧边栏信息
      *
