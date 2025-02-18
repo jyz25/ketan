@@ -9,6 +9,7 @@ import com.ketan.api.model.vo.article.dto.CategoryDTO;
 import com.ketan.api.model.vo.banner.dto.ConfigDTO;
 import com.ketan.api.model.vo.recommend.CarouseDTO;
 import com.ketan.api.model.vo.user.dto.UserStatisticInfoDTO;
+import com.ketan.core.async.AsyncUtil;
 import com.ketan.core.common.CommonConstants;
 import com.ketan.service.article.service.ArticleReadService;
 import com.ketan.service.article.service.CategoryService;
@@ -53,12 +54,16 @@ public class IndexRecommendHelper {
         CategoryDTO category = categories(activeTab, vo);
         // 设置被选中的CategoryId
         vo.setCategoryId(category.getCategoryId());
-        // 并行调度实例，提高响应性能 待做
-        vo.setArticles(articleList(category.getCategoryId()));
-        vo.setTopArticles(topArticleList(category));
-        vo.setHomeCarouselList(homeCarouselList());
-        vo.setSideBarItems(sidebarService.queryHomeSidebarList());
-        vo.setUser(loginInfo());
+        vo.setCurrentCategory(category.getCategory());
+        // 并行调度实例，提高响应性能
+        AsyncUtil.concurrentExecutor("首页响应")
+                .async(() -> vo.setArticles(articleList(category.getCategoryId())), "文章列表")
+                .async(() -> vo.setTopArticles(topArticleList(category)), "置顶文章")
+                .async(() -> vo.setHomeCarouselList(homeCarouselList()), "轮播图")
+                .async(() -> vo.setSideBarItems(sidebarService.queryHomeSidebarList()), "侧边栏")
+                .async(() -> vo.setUser(loginInfo()), "用户信息")
+                .allExecuted()
+                .prettyPrint();
         return vo;
     }
 
