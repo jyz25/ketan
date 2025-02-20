@@ -13,6 +13,10 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
         <!-- 引入 mapstruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>

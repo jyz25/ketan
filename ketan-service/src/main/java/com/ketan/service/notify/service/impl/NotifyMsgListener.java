@@ -1,5 +1,6 @@
 package com.ketan.service.notify.service.impl;
 
+import com.ketan.api.model.enums.DocumentTypeEnum;
 import com.ketan.api.model.enums.NotifyStatEnum;
 import com.ketan.api.model.enums.NotifyTypeEnum;
 import com.ketan.api.model.vo.notify.NotifyMsgEvent;
@@ -10,12 +11,15 @@ import com.ketan.service.comment.repository.entity.CommentDO;
 import com.ketan.service.comment.service.CommentReadService;
 import com.ketan.service.notify.repository.dao.NotifyMsgDao;
 import com.ketan.service.notify.repository.entity.NotifyMsgDO;
+import com.ketan.service.notify.service.NotifyService;
 import com.ketan.service.user.repository.entity.UserFootDO;
 import com.ketan.service.user.repository.entity.UserRelationDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 
 @Slf4j
@@ -29,12 +33,17 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
 
     private final NotifyMsgDao notifyMsgDao;
 
+    private final NotifyService notifyService;
+
     public NotifyMsgListener(ArticleReadService articleReadService,
                              CommentReadService commentReadService,
+                             NotifyService notifyService,
                              NotifyMsgDao notifyMsgDao) {
         this.articleReadService = articleReadService;
         this.commentReadService = commentReadService;
+        this.notifyService = notifyService;
         this.notifyMsgDao = notifyMsgDao;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -90,6 +99,9 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
                 .setState(NotifyStatEnum.UNREAD.getStat()).setMsg(comment.getContent());
         // 对于评论而言，支持多次评论；因此若之前有也不删除
         notifyMsgDao.save(msg);
+
+        // 消息通知
+        notifyService.notifyToUser(msg.getNotifyUserId(), String.format("您的文章《%s》收到一个新的评论，快去看看吧", article.getTitle()));
     }
 
     /**
@@ -108,6 +120,9 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
                 .setState(NotifyStatEnum.UNREAD.getStat()).setMsg(comment.getContent());
         // 回复同样支持多次回复，不做幂等校验
         notifyMsgDao.save(msg);
+
+        // 消息通知
+        notifyService.notifyToUser(msg.getNotifyUserId(), String.format("您的评价《%s》收到一个新的回复，快去看看吧", parent.getContent()));
     }
 
     /**
@@ -123,10 +138,21 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
                 .setType(event.getNotifyType().getType())
                 .setState(NotifyStatEnum.UNREAD.getStat())
                 .setMsg("");
+        if (Objects.equals(foot.getDocumentType(), DocumentTypeEnum.COMMENT.getCode())) {
+            // 点赞评论时，详情内容中显示评论信息
+            CommentDO comment = commentReadService.queryComment(foot.getDocumentId());
+            ArticleDO article = articleReadService.queryBasicArticle(comment.getArticleId());
+            msg.setMsg(String.format("赞了您在文章 <a href=\"/article/detail/%d\">%s</a> 下的评论 <span style=\"color:darkslategray;font-style: italic;font-size: 0.9em\">%s</span>", article.getId(), article.getTitle(), comment.getContent()));
+        }
+
         NotifyMsgDO record = notifyMsgDao.getByUserIdRelatedIdAndType(msg);
         if (record == null) {
             // 若之前已经有对应的通知，则不重复记录；因为一个用户对一篇文章，可以重复的点赞、取消点赞，但是最终我们只通知一次
             notifyMsgDao.save(msg);
+            // 消息通知
+            notifyService.notifyToUser(msg.getNotifyUserId(), String.format("太棒了，您的%s %s数+1!!!",
+                    Objects.equals(foot.getDocumentType(), DocumentTypeEnum.ARTICLE.getCode()) ? "文章" : "评论",
+                    event.getNotifyType().getMsg()));
         }
     }
 
@@ -180,6 +206,8 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
         if (record == null) {
             // 若之前已经有对应的通知，则不重复记录；因为用户的关注是一对一的，可以重复的关注、取消，但是最终我们只通知一次
             notifyMsgDao.save(msg);
+
+            notifyService.notifyToUser(msg.getNotifyUserId(), "恭喜您获得一枚新粉丝~");
         }
     }
 
@@ -213,6 +241,8 @@ public class NotifyMsgListener<T> implements ApplicationListener<NotifyMsgEvent<
         if (record == null) {
             // 若之前已经有对应的通知，则不重复记录；因为用户的关注是一对一的，可以重复的关注、取消，但是最终我们只通知一次
             notifyMsgDao.save(msg);
+
+            notifyService.notifyToUser(msg.getNotifyUserId(), "您有一个新的系统通知消息，请注意查收");
         }
     }
 
