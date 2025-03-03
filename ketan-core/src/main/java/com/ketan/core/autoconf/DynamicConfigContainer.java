@@ -61,7 +61,7 @@ public class DynamicConfigContainer implements EnvironmentAware, ApplicationCont
     public void init() {
         // 1、为成员变量cache创建实例
         cache = Maps.newHashMap();
-        // 2、将cache于系统配置连接起来，作为动态配置的数据来源
+        // 2、将cache与系统配置连接起来，作为动态配置的数据来源
         bindBeansFromLocalCache("dbConfig", cache);
     }
 

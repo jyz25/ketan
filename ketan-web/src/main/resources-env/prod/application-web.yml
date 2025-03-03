@@ -5,3 +5,6 @@ spring:
     servlet:
       content-type: text/html
     cache: true # 开启缓存
+
+env:
+  name: prod

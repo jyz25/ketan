@@ -41,7 +41,7 @@ public class UserPwdEncoder {
     }
 
     public static void main(String[] args) {
-        String plainPwd = "xiongda";
+        String plainPwd = "admin";
         if (plainPwd.length() > 3) {
             plainPwd = plainPwd.substring(0, 3) + "tech_π" + plainPwd.substring(3);
         } else {

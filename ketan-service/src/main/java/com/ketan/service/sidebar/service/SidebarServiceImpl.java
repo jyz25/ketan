@@ -181,7 +181,7 @@ public class SidebarServiceImpl implements SidebarService {
                 .setTitle("关于枫叶社区")
                 // TODO 知识星球的
                 .setImg("https://img-baofun.zhhainiao.com/fs/9299f9495e4eafc0c5d5ee84840673de.jpg")
-                .setUrl("http://localhost:80/article/detail/1")
+                .setUrl("/article/detail/1")
                 .setItems(items)
                 .setStyle(SidebarStyleEnum.NOTICE.getStyle());
     }

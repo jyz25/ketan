@@ -1,7 +1,6 @@
 spring:
   config:
-    import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml,application-rabbitmq.yml
-
+    import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml,application-rabbitmq.yml,application-email.yml
 
 
 # 默认的数据库名
