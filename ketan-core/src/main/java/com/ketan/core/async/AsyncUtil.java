@@ -83,6 +83,7 @@ public class AsyncUtil {
     /**
      * 带超时时间的方法调用执行，当执行时间超过给定的时间，则返回一个超时异常，内部的任务还是正常执行
      * 若超时时间内执行完毕，则直接返回
+     * 是异步执行，但是这里是阻塞返回结果，超时返回异常
      */
     public static <T> T callWithTimeLimit(long time, TimeUnit unit, Callable<T> call) throws ExecutionException, InterruptedException, TimeoutException {
         return simpleTimeLimiter.callWithTimeout(call, time, unit);

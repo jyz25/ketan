@@ -5,7 +5,7 @@ view:
     websiteName: 科探
     zsxqUrl: https://ss.bjmu.edu.cn/Html/News/Articles/103156.html # 健康知识跳转的链接
     zsxqImgUrl: /forum/image/zshb.png # 健康海报的图片地址
-    websiteRecord: 暂无备案（个人测试使用）
+    websiteRecord: 渝ICP备2025052934号
     oss:
     host: http://127.0.0.1:${server.port}
     contactMeWxQrCode: /forum/image/tan-qrcode.jpg  # 公众号二维码,扫描登录使用

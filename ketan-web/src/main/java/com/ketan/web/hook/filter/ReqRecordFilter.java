@@ -42,6 +42,7 @@ public class ReqRecordFilter implements Filter {
      */
     private static final String GLOBAL_TRACE_ID_HEADER = "g-trace-id";
 
+    // 疑问1：为啥爆红依然能注入？
     @Autowired
     private GlobalInitService globalInitService;
 

@@ -178,7 +178,7 @@ public class SidebarServiceImpl implements SidebarService {
             );
         });
         return new SideBarDTO()
-                .setTitle("关于枫叶社区")
+                .setTitle("关于我的技术汇")
                 // TODO 知识星球的
                 .setImg("https://img-baofun.zhhainiao.com/fs/9299f9495e4eafc0c5d5ee84840673de.jpg")
                 .setUrl("/article/detail/1")

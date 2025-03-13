@@ -3,6 +3,7 @@ spring:
     import: application-web.yml,application-config.yml,application-image.yml,application-dal.yml,application-rabbitmq.yml,application-email.yml
 
 
+
 # 默认的数据库名
 database:
   name: ketan
@@ -27,3 +28,5 @@ ketan:
     issuer: ketan # 签发者
     secret: hello_world # 签名密钥
     expire: 2592000000 # jwt的有效期，默认30天
+server:
+  port: 80
