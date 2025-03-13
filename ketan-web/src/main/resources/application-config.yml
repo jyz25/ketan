@@ -2,11 +2,11 @@ view:
   site:
     needLoginArticleReadCount: 30 # 需要登录才能阅读的文章阅读次数
     zsxqArticleReadCount: 20 # 知识星球用户才能阅读的文章阅读次数统计间隔
-    websiteName: 科探
+    websiteName: 我的技术汇
     zsxqUrl: https://ss.bjmu.edu.cn/Html/News/Articles/103156.html # 健康知识跳转的链接
     zsxqImgUrl: /forum/image/zshb.png # 健康海报的图片地址
     websiteRecord: 渝ICP备2025052934号
-    oss:
+    oss: https://cdn.tobebetterjavaer.com/paicodingui0222/static
     host: http://127.0.0.1:${server.port}
     contactMeWxQrCode: /forum/image/tan-qrcode.jpg  # 公众号二维码,扫描登录使用
 

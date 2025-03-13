@@ -1,4 +1,4 @@
 log:
   path: logs
 env:
-  name: dev
+  name: prod
