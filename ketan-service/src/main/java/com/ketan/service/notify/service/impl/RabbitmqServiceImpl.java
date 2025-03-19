@@ -43,13 +43,12 @@ public class RabbitmqServiceImpl implements RabbitmqService {
             // 声明exchange中的消息为可持久化，不自动删除
             channel.exchangeDeclare(exchange, exchangeType, true, false, null);
             // 发布消息
-            // channel.basicPublish(exchangeName, routingKey, null, messageBodyBytes);
             channel.basicPublish(exchange, toutingKey, null, message.getBytes());
             log.info("Publish msg: {}", message);
             channel.close();
             RabbitmqConnectionPool.returnConnection(rabbitmqConnection);
         } catch (InterruptedException | IOException | TimeoutException e) {
-            e.printStackTrace();
+            log.error("rabbitMq消息发送异常: exchange: {}, msg: {}", exchange, message, e);
         }
 
     }

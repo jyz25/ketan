@@ -23,7 +23,7 @@ public interface RabbitmqService {
     void publishMsg(String exchange,
                     BuiltinExchangeType exchangeType,
                     String toutingKey,
-                    String message) throws IOException, TimeoutException;
+                    String message);
 
 
     /**

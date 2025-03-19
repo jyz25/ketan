@@ -24,6 +24,16 @@ public class UserFootDao extends ServiceImpl<UserFootMapper, UserFootDO> {
         return baseMapper.selectOne(query);
     }
 
+    // 使用行锁的方法来保证原子性
+    public UserFootDO getByDocumentAndUserIdForUpdate(Long documentId, Integer type, Long userId) {
+        LambdaQueryWrapper<UserFootDO> query = Wrappers.lambdaQuery();
+        query.eq(UserFootDO::getDocumentId, documentId)
+                .eq(UserFootDO::getDocumentType, type)
+                .eq(UserFootDO::getUserId, userId)
+                .last("FOR UPDATE");
+        return baseMapper.selectOne(query);
+    }
+
     public List<SimpleUserInfoDTO> listDocumentPraisedUsers(Long documentId, Integer type, int size) {
         return baseMapper.listSimpleUserInfosByArticleId(documentId, type, size);
     }

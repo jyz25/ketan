@@ -1,14 +1,23 @@
 package com.ketan.service.user.service.userfoot;
 
 import com.ketan.api.model.enums.DocumentTypeEnum;
+import com.ketan.api.model.enums.NotifyTypeEnum;
 import com.ketan.api.model.enums.OperateTypeEnum;
 import com.ketan.api.model.vo.PageParam;
 import com.ketan.api.model.vo.user.dto.SimpleUserInfoDTO;
+import com.ketan.core.common.CommonConstants;
+import com.ketan.core.util.JsonUtil;
 import com.ketan.service.comment.repository.entity.CommentDO;
+import com.ketan.service.notify.help.MsgNotifyHelper;
+import com.ketan.service.notify.service.RabbitmqService;
 import com.ketan.service.user.repository.dao.UserFootDao;
 import com.ketan.service.user.repository.entity.UserFootDO;
 import com.ketan.service.user.service.UserFootService;
+import com.rabbitmq.client.BuiltinExchangeType;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -17,9 +26,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Service
+@Slf4j
 public class UserFootServiceImpl implements UserFootService {
 
     private final UserFootDao userFootDao;
+
+    @Autowired
+    private RabbitmqService rabbitmqService;
 
 
     public UserFootServiceImpl(UserFootDao userFootDao) {
@@ -35,7 +48,6 @@ public class UserFootServiceImpl implements UserFootService {
     public UserFootDO queryUserFoot(Long documentId, Integer type, Long userId) {
         return userFootDao.getByDocumentAndUserId(documentId, type, userId);
     }
-
 
 
     /**
@@ -77,6 +89,70 @@ public class UserFootServiceImpl implements UserFootService {
         return userFootDao.listCollectedArticlesByUserId(userId, pageParam);
     }
 
+    /**
+     * 文章/评论点赞、取消点赞、收藏、取消收藏
+     *
+     * @param documentType    文档类型：博文 + 评论
+     * @param documentId      文档id
+     * @param authorId        作者
+     * @param userId          操作人
+     * @param operateTypeEnum 操作类型：点赞，评论，收藏等
+     */
+    @Override
+    @Transactional
+    public void favorArticleComment(DocumentTypeEnum documentType, Long documentId, Long authorId, Long userId, OperateTypeEnum operateTypeEnum) {
+        // fixme 这里没有做并发控制，在大并发场景下，可能出现查询出来的数据，与db中数据不一致的场景
+        // fixme 解决方案：自旋等待的分布式锁 or 事务 + 悲观锁
+        // fixme 考虑到这个足迹的准确性影响并不大，留待有缘人进行修正
+
+        // 查询是否有该足迹；有则更新，没有则插入
+        log.info("事务开始，尝试获取锁: {}, userId: {}", documentId, userId);
+        UserFootDO readUserFootDO = userFootDao.getByDocumentAndUserIdForUpdate(documentId, documentType.getCode(), userId);
+        log.info("本事务已经获取到锁: {}, userId: {}", documentId, userId);
+        boolean dbChanged = false;
+        if (readUserFootDO == null) {
+            readUserFootDO = new UserFootDO();
+            readUserFootDO.setUserId(userId);
+            readUserFootDO.setDocumentId(documentId);
+            readUserFootDO.setDocumentType(documentType.getCode());
+            readUserFootDO.setDocumentUserId(authorId);
+            setUserFootStat(readUserFootDO, operateTypeEnum);
+            userFootDao.save(readUserFootDO);
+            dbChanged = true;
+        } else if (setUserFootStat(readUserFootDO, operateTypeEnum)) {
+            readUserFootDO.setUpdateTime(new Date());
+            userFootDao.updateById(readUserFootDO);
+            dbChanged = true;
+        }
+
+
+        if (!dbChanged) {
+            log.info("事务完成，释放锁: {}, userId: {}", documentId, userId);
+            // 幂等，直接返回
+            return;
+        }
+
+
+        // 点赞、收藏两种操作时，需要发送异步消息，用于生成消息通知、更新文章/评论的相关计数统计、更新用户的活跃积分
+        NotifyTypeEnum notifyType = OperateTypeEnum.getNotifyType(operateTypeEnum);
+        if (notifyType == null) {
+            // 不需要发送通知的场景，直接返回
+            return;
+        }
+
+        // 点赞消息走 RabbitMQ，其它走 Java 内置消息机制
+        if (notifyType.equals(NotifyTypeEnum.PRAISE) && rabbitmqService.enabled()) {
+            rabbitmqService.publishMsg(
+                    CommonConstants.EXCHANGE_NAME_DIRECT,
+                    BuiltinExchangeType.DIRECT,
+                    CommonConstants.QUERE_KEY_PRAISE,
+                    JsonUtil.toStr(readUserFootDO));
+        } else {
+            MsgNotifyHelper.publish(notifyType, readUserFootDO);
+        }
+    }
+
+
     @Override
     public void saveCommentFoot(CommentDO comment, Long articleAuthor, Long parentCommentAuthor) {
         // 保存文章对应的评论足迹
@@ -96,7 +172,6 @@ public class UserFootServiceImpl implements UserFootService {
             saveOrUpdateUserFoot(DocumentTypeEnum.COMMENT, comment.getParentCommentId(), parentCommentAuthor, comment.getUserId(), OperateTypeEnum.DELETE_COMMENT);
         }
     }
-
 
 
     private boolean setUserFootStat(UserFootDO userFootDO, OperateTypeEnum operate) {
@@ -136,7 +211,6 @@ public class UserFootServiceImpl implements UserFootService {
         consumer.accept(input);
         return true;
     }
-
 
 
 }
